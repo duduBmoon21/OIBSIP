@@ -1,16 +1,15 @@
-let expressionDisplay = document.getElementById('current_calculation'); 
+let expressionDisplay = document.getElementById('expression');
 let resultDisplay = document.getElementById('result');
 let currentExpression = '';
 let ans = 0;
 
-function btnInput(value) {
-    // Check if the value is a number or operator
-    if (!isNaN(value) || ['+', '-', '*', '/', '.', '(', ')'].includes(value)) {
-        currentExpression += value;
-    } else if (value === 'ans') {
-        // Insert last answer if 'ans' button is clicked
-        currentExpression += ans;
-    }
+function btnInput(number) {
+    currentExpression += number;
+    expressionDisplay.value = currentExpression;
+}
+
+function btnInput(operator) {
+    currentExpression += operator;
     expressionDisplay.value = currentExpression;
 }
 
@@ -52,35 +51,3 @@ function toggleSign() {
     }
     expressionDisplay.value = currentExpression;
 }
-
-// Event listener for keyboard input
-document.addEventListener('keydown', function(e) {
-    e.preventDefault(); // Prevent default behavior for keys
-    const key = e.key;
-
-    // Loop through possible keys and trigger appropriate functions
-    let keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '.', 'Enter', 'Backspace', 'Escape'];
-    let isKeyHandled = false;
-
-    for (let i = 0; i < keys.length; i++) {
-        if (key === keys[i]) {
-            if (key === 'Enter') {
-                calculateResult(); // Calculate result on Enter
-            } else if (key === 'Backspace') {
-                deleteLast(); // Handle backspace
-            } else if (key === 'Escape') {
-                clearScreen(); // Clear screen on Escape
-            } else {
-                btnInput(key); // Call btnInput for numbers and operators
-            }
-            isKeyHandled = true;
-            break; // Exit loop after handling the key
-        }
-    }
-
-    // If the key pressed is not recognized, you could log an error or do nothing
-    if (!isKeyHandled) {
-        console.error('Unrecognized key pressed:', key);
-    }
-});
-
