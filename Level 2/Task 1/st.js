@@ -4,7 +4,7 @@ let lastAnswer = "";
 
 // Function to handle button input
 function btnInput(value) {
-    const expressionField = document.getElementById("expression");
+    const currentField = document.getElementById("current_calculation");
     const resultField = document.getElementById("result");
 
     // If the equal button is pressed, evaluate the expression
@@ -14,25 +14,27 @@ function btnInput(value) {
             lastAnswer = eval(expression);
             resultField.value = lastAnswer; // Show the result
             expression = ''; // Clear the expression for new input
+            currentField.value = ''; // Clear current calculation display
         } catch (e) {
             // Handle errors during evaluation
             resultField.value = "Error";
             expression = ''; // Clear the expression after error
+            currentField.value = ''; // Clear current calculation display
         }
     } else if (value === 'clear') {
         // Clear the expression and result when clear is pressed
         expression = '';
         lastAnswer = '';
-        expressionField.value = '';
+        currentField.value = '';
         resultField.value = '';
     } else if (value === 'del') {
         // Remove the last character from the expression
         expression = expression.slice(0, -1);
-        expressionField.value = expression; // Update the displayed expression
+        currentField.value = expression; // Update the displayed expression
     } else {
         // Append the value to the expression
         expression += value;
-        expressionField.value = expression; // Update the displayed expression
+        currentField.value = expression; // Update the displayed expression
     }
 }
 
@@ -40,7 +42,7 @@ function btnInput(value) {
 function button_clear() {
     expression = '';
     lastAnswer = '';
-    document.getElementById("expression").value = '';
+    document.getElementById("current_calculation").value = '';
     document.getElementById("result").value = '';
 }
 
@@ -48,7 +50,7 @@ function button_clear() {
 function backspace_remove() {
     // Remove the last character from the expression
     expression = expression.slice(0, -1);
-    document.getElementById("expression").value = expression; // Update the displayed expression
+    document.getElementById("current_calculation").value = expression; // Update the displayed expression
 }
 
 // Function to handle sign change for numbers
