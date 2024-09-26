@@ -1,134 +1,318 @@
-var operators = ["+", "-", "÷", "*"];
+var operators = ["+", "-", "/", "*"];
+
 var result = null;
-var operator_value = null;
+var last_operation_history = null;
+var operator = null;
 var equal = null;
 var dot = null;
+
 var firstNum = true;
+
 var numbers = [];
-var calc_operator = null;
-var total = null;
+var operator_value;
+var last_button;
+var calc_operator;
+
+var total;
+
+var key_combination = []
 
 function btnInput(button) {
+    operator = document.getElementsByClassName("operator");
     result = document.getElementById("result");
+    last_operation_history = document.getElementById("last_operation_history");
     equal = document.getElementById("equal_sign").value;
     dot = document.getElementById("dot").value;
 
-    // If button is not an operator or = sign
+    last_button = button;
+
+    // if button is not an operator or = sign
     if (!operators.includes(button) && button != equal) {
+        // if it is the first button clicked
         if (firstNum) {
-            result.innerText = (button === dot) ? "0" + dot : button;
+            // and it's a dot, show 0.
+            if (button == dot) {
+                result.innerText = "0" + dot;
+            }
+            // else clear box and show the number
+            else {
+                result.innerText = button;
+            }
             firstNum = false;
-        } else {
-            if (result.innerText.length < 20) { // Limit to 20 characters
-                if (button === dot && !result.innerText.includes(dot)) {
-                    result.innerText += button;
-                } else if (result.innerText !== "0" || button !== "0") {
+        }
+        else {
+            // return if the box value is 0
+            if (result.innerText.length == 1 && result.innerText == 0) {
+                if (button == dot) {
                     result.innerText += button;
                 }
+                return;
+            }
+            // return if the box already has a dot and clicked button is a dot
+            if (result.innerText.includes(dot) && button == dot) {
+                return;
+            }
+            // maximum allowed numbers inputted are 20
+            if (result.innerText.length == 20) {
+                return;
+            }
+
+            // if pressed dot and box already has a - sign, show -0.
+            if (button == dot && result.innerText == "-") {
+                result.innerText = "-0" + dot;
+            }
+            // else append number
+            else {
+                result.innerText += button;
             }
         }
-    } else {
-        // If it's an operator or = sign
-        if (operator_value !== null && button === operator_value) {
-            return; // Ignore if the same operator is clicked
-        }
-
-        if (button === "-" && result.innerText === "0") {
-            result.innerText = button; // Allow negative sign on zero
-            firstNum = false;
-            operator_value = button;
+    }
+    // if it's an operator or = sign
+    else {
+        // return if operator is already pressed
+        if (operator_value != null && button == operator_value) {
             return;
         }
 
+        // show minus sign if it's the first value selected and finally return
+        if (button == "-" && result.innerText == 0) {
+            result.innerText = button;
+            firstNum = false;
+            operator_value = button
+            showSelectedOperator();
+            return;
+        }
+        // return if minus operator pressed and it's already printed on screen 
+        else if (operators.includes(button) && result.innerText == "-") {
+            return;
+        }
+        // return if minus operator pressed and history already has equal sign
+        else if (button == "-" && operator_value == "-" && last_operation_history.innerText.includes("=")) {
+            return;
+        }
+
+        // set value of operator if it's one
         if (operators.includes(button)) {
-            if (typeof calc_operator !== "undefined" && calc_operator !== null) {
-                // If the current operator is the same as the last one, do nothing
-                if (button === calc_operator) return;
+            if (typeof last_operator != "undefined" && last_operator != null) {
+                calc_operator = last_operator;
             }
-            calc_operator = button;
+            else {
+                calc_operator = button;
+            }
+            if (button == "*") {
+                last_operator = "×";
+            }
+            else if (button == "/") {
+                last_operator = "÷";
+            }
+            else {
+                last_operator = button;
+            }
             operator_value = button;
-            firstNum = true; // Reset for next number
-
-            if (numbers.length === 0) {
-                numbers.push(result.innerText);
-            } else if (numbers.length === 1) {
-                numbers.push(result.innerText);
-            } else {
-                numbers[0] = calculate(numbers[0], result.innerText, calc_operator);
-                result.innerText = numbers[0]; // Update result with the total
-                numbers[1] = ""; // Clear second number for next input
-            }
+            firstNum = true;
+            showSelectedOperator();
         }
 
-        if (button === equal) {
-            if (numbers.length === 2 && calc_operator) {
-                total = calculate(numbers[0], result.innerText, calc_operator);
+        // add first number to numbers array and show it on history
+        if (numbers.length == 0) {
+            numbers.push(result.innerText);
+            if (typeof last_operator != "undefined" && last_operator != null) {
+                last_operation_history.innerText = result.innerText + " " + last_operator;
+            }
+        }
+        // rest of calculations
+        else {
+            if (numbers.length == 1) {
+                numbers[1] = result.innerText;
+            }
+            var temp_num = result.innerText;
+
+            // calculate total
+            if (button == equal && calc_operator != null) {
+                var total = calculate(numbers[0], numbers[1], calc_operator);
                 result.innerText = total;
-                numbers[0] = total; // Update numbers array
-                numbers.pop(); // Clear the second number
-                operator_value = null; // Reset operator
-                calc_operator = null; // Reset calc_operator
+
+                // append second number to history
+                if (!last_operation_history.innerText.includes("=")) {
+                    last_operation_history.innerText += " " + numbers[1] + " =";
+                }
+
+                temp_num = numbers[0];
+
+                numbers[0] = total;
+                operator_value = null;
+                showSelectedOperator();
+
+                // replace first number of history with the value of total
+                var history_arr = last_operation_history.innerText.split(" ");
+                history_arr[0] = temp_num;
+                last_operation_history.innerText = history_arr.join(" ");
+            }
+            // update history with the value on screen and the pressed operator
+            else if (calc_operator != null) {
+                last_operation_history.innerText = temp_num + " " + last_operator;
+                calc_operator = button;
+                numbers = [];
+                numbers.push(result.innerText);
             }
         }
     }
 }
 
-// Function to calculate the result using two numbers and an operator
+// highlight operator button when selected
+function showSelectedOperator() {
+    var elements = document.getElementsByClassName("operator");
+
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor = "#e68a00";
+    }
+
+    if (operator_value == "+") {
+        document.getElementById("plusOp").style.backgroundColor = "#ffd11a";
+    }
+    else if (operator_value == "-") {
+        document.getElementById("subOp").style.backgroundColor = "#ffd11a";
+    }
+    else if (operator_value == "*") {
+        document.getElementById("multiOp").style.backgroundColor = "#ffd11a";
+    }
+    else if (operator_value == "/") {
+        document.getElementById("divOp").style.backgroundColor = "#ffd11a";
+    }
+}
+
+// function to calculate the result using two numbers and an operator
 function calculate(num1, num2, operator) {
-    switch (operator) {
-        case "+":
-            total = parseFloat(num1) + parseFloat(num2);
-            break;
-        case "-":
-            total = parseFloat(num1) - parseFloat(num2);
-            break;
-        case "*":
-            total = parseFloat(num1) * parseFloat(num2);
-            break;
-        case "÷":
-            total = parseFloat(num1) / parseFloat(num2);
-            break;
-        default:
-            total = 0;
+    if (operator === "+") {
+        total = (parseFloat)(num1) + (parseFloat)(num2);
     }
-
-    return Number.isInteger(total) ? total : total.toPrecision(12); // Return total
-}
-
-function clearScreen() {
-    result.innerText = "0";
-    operator_value = null;
-    numbers = [];
-    firstNum = true;
-    calc_operator = null; // Reset the operator for new calculations
-}
-
-function deleteLast() {
-    let currentExpression = result.innerText;
-    if (currentExpression.length > 1) {
-        result.innerText = currentExpression.slice(0, -1); // Remove last digit
-    } else {
-        result.innerText = "0"; // Reset to 0 if it's the last digit
+    else if (operator === "-") {
+        total = (parseFloat)(num1) - (parseFloat)(num2);
     }
-}
-
-function insertAns(ans) {
-    let currentExpression = result.innerText;
-    result.innerText += ans; // Append answer to the current expression
-}
-
-function square_root() {
-    result.innerText = Math.sqrt(parseFloat(result.innerText));
-   
-    operator_value = null;
-}
-
-function plus_minus() {
-    if (result.innerText.length > 0) {
-        if (result.innerText.includes("-")) {
-            result.innerText = result.innerText.substring(1); // Remove negative sign
-        } else {
-            result.innerText = "-" + result.innerText; // Add negative sign
+    else if (operator === "*") {
+        total = (parseFloat)(num1) * (parseFloat)(num2);
+    }
+    else if (operator === "/") {
+        total = (parseFloat)(num1) / (parseFloat)(num2);
+    }
+    else {
+        if (total == result.innerText) {
+            return total;
+        }
+        else {
+            return result.innerText;
         }
     }
+    // if total is not integer, show maximum 12 decimal places
+    if (!Number.isInteger(total)) {
+        total = total.toPrecision(12);
+    }
+    return parseFloat(total);
+}
+
+// function to clear box and reset everything
+function button_clear() {
+    window.location.reload();
+}
+
+function backspace_remove() {
+    result = document.getElementById("result");
+    var elements = document.getElementsByClassName("operator");
+
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor = "#e68a00";
+    }
+
+    var last_num = result.innerText;
+    last_num = last_num.slice(0, -1);
+    
+    result.innerText = last_num;
+
+    // show 0 zero if all characters on screen are removed
+    if (result.innerText.length == 0) {
+        result.innerText = 0;
+        firstNum = true;
+    }
+}
+
+// function to change the sign of the number currently on screen
+function plus_minus() {
+    result = document.getElementById("result");
+
+    // if any operator is already pressed
+    if (typeof last_operator != "undefined") {
+        if (numbers.length > 0) {
+            // if last button pressed is an operator
+            if (operators.includes(last_button)) {
+                // if the displayed text is just a negative sign, replace it with a 0
+                if (result.innerText == "-") {
+                    result.innerText = 0;
+                    firstNum = true;
+                    return;
+                }
+                // if the displayed text is not just a negative sign, replace it with a negative sign
+                else {
+                    result.innerText = "-";
+                    firstNum = false;
+                }
+            }
+            // if last button pressed is not an operator, change its sign
+            else {
+                result.innerText = -result.innerText;
+
+                if (numbers.length == 1) {
+                    numbers[0] = result.innerText;
+                }
+                else {
+                    numbers[1] = result.innerText;
+                }
+            }
+        }
+        return;
+    }
+
+    // if displayed text is 0, replace it with a negative sign
+    if (result.innerText == 0) {
+        result.innerText = "-";
+        firstNum = false;
+        return;
+    }
+    result.innerText = -result.innerText;
+}
+
+// function to calculate square root of the number currently on screen
+function square_root() {
+    result = document.getElementById("result");
+    var square_num = Math.sqrt(result.innerText);
+    result.innerText = square_num;
+    numbers.push(square_num);
+}
+
+
+
+
+// function to calculate the percentage of a number
+function calculate_percentage() {
+    var elements = document.getElementsByClassName("operator");
+    result = document.getElementById("result");
+
+    if (numbers.length > 0 && typeof last_operator != "undefined") {
+        var perc_value = (result.innerText / 100) * numbers[0];
+        if (!Number.isInteger(perc_value)) {
+            perc_value = perc_value.toFixed(2);
+        }
+        result.innerText = perc_value;
+        numbers.push(result.innerText);
+    
+        // append second number to history
+        if (!last_operation_history.innerText.includes("=")) {
+            last_operation_history.innerText += " " + numbers[1] + " =";
+        }
+    } else {
+        result.innerText = result.innerText / 100;
+    }
+
+    numbers.push(result.innerText);
+    var res = calculate(numbers[0], numbers[1], last_operator);
+    result.innerText = res;
 }
