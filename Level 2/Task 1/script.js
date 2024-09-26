@@ -1,4 +1,3 @@
-
 let expressionDisplay = document.getElementById('expression');
 let resultDisplay = document.getElementById('result');
 let currentExpression = '';
@@ -27,9 +26,13 @@ function deleteLast() {
 
 function calculateResult() {
     try {
-        let result = eval(currentExpression);
+        // Replace 'sqrt(' with 'Math.sqrt(' for proper evaluation
+        let expression = currentExpression.replace(/sqrt\(/g, 'Math.sqrt(');
+
+        // Safely evaluate the expression
+        let result = eval(expression);
         resultDisplay.value = result;
-        ans = result;
+        ans = result;  // Save the result as 'ans'
     } catch (e) {
         resultDisplay.value = 'Error';
     }
@@ -39,7 +42,6 @@ function insertAns() {
     currentExpression += ans;
     expressionDisplay.value = currentExpression;
 }
-
 
 function toggleSign() {
     if (currentExpression.charAt(0) === '-') {
