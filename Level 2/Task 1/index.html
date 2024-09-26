@@ -11,8 +11,8 @@
     <div class="calculator">
         <div class="display">
             <!-- Expression and Result Display -->
-            <input type="text" id="expression" disabled>
-            <input type="text" id="result" disabled>
+            <p id="last_operation_history"></p>
+            <input type="text" id="result" disabled value="0">
         </div>
         <div class="buttons">
             <!-- Calculator Buttons -->
@@ -24,21 +24,21 @@
             <button onclick="btnInput('7')">7</button>
             <button onclick="btnInput('8')">8</button>
             <button onclick="btnInput('9')">9</button>
-            <button class="du operator" onclick="btnInput('%')">&#37;</button>
-            <button class="du operator" onclick="square_root()">&#8730;</button>
+            <button class="du"  id="du-operator" onclick="btnInput('%')">&#37;</button>
+            <button class="du"  id="du-operator" onclick="square_root()">&#8730;</button>
             <button onclick="btnInput('4')">4</button>
             <button onclick="btnInput('5')">5</button>
             <button onclick="btnInput('6')">6</button>
-            <button class="du operator" onclick="btnInput('*')">&#215;</button>
-            <button class="du operator" onclick="btnInput('/')">&#247;</button>
+            <button class="du"  id="du-operator" onclick="btnInput('*')">&#215;</button>
+            <button class="du"  id="du-operator" onclick="btnInput('/')">&#247;</button>
             <button onclick="btnInput('1')">1</button>
             <button onclick="btnInput('2')">2</button>
             <button onclick="btnInput('3')">3</button>
-            <button class="du operator" onclick="btnInput('+')">+</button>
-            <button class="du operator" onclick="btnInput('-')">-</button>
+            <button class="dur"   id="du-operator" onclick="btnInput('+')">+</button>
+            <button class="du"   id="du-operator" onclick="btnInput('-')">-</button>
             <button class="du" onclick="btnInput('.')">.</button>
             <button onclick="btnInput('0')">0</button>
-            <button class="du sign-btn" onclick="plus_minus()">±</button>
+            <button class="du" id="du-sign-btn" onclick="plus_minus()">±</button>
             <button class="enter-btn" onclick="btnInput('=')">ENTER</button>
         </div>
     </div>

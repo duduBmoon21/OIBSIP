@@ -3,47 +3,67 @@ let resultDisplay = document.getElementById('result');
 let currentExpression = '';
 let ans = 0;
 
-function appendNumber(number) {
+function btnInput(number) {
     currentExpression += number;
     expressionDisplay.value = currentExpression;
 }
 
-function appendOperator(operator) {
+function btnInput(operator) {
+    // Only allow operators if the last character is not already an operator
+    if (currentExpression.length === 0 || operators.includes(currentExpression.charAt(currentExpression.length - 1))) {
+        return; // Do nothing if currentExpression is empty or ends with an operator
+    }
     currentExpression += operator;
     expressionDisplay.value = currentExpression;
 }
 
-function clearScreen() {
-    currentExpression = '';
-    expressionDisplay.value = '';
-    resultDisplay.value = '';
+// function to clear box and reset everything
+function button_clear() {
+    window.location.reload();
 }
 
-function deleteLast() {
-    currentExpression = currentExpression.slice(0, -1);
-    expressionDisplay.value = currentExpression;
-}
+function backspace_remove() {
+    result = document.getElementById("result");
+    var elements = document.getElementsByClassName("operator");
 
-function calculateResult() {
-    try {
-        // Replace 'sqrt(' with 'Math.sqrt(' for proper evaluation
-        let expression = currentExpression.replace(/sqrt\(/g, 'Math.sqrt(');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor = "#e68a00";
+    }
 
-        // Safely evaluate the expression
-        let result = eval(expression);
-        resultDisplay.value = result;
-        ans = result;  // Save the result as 'ans'
-    } catch (e) {
-        resultDisplay.value = 'Error';
+    var last_num = result.innerText;
+    last_num = last_num.slice(0, -1);
+    
+    result.innerText = last_num;
+
+    // show 0 zero if all characters on screen are removed
+    if (result.innerText.length == 0) {
+        result.innerText = 0;
+        firstNum = true;
     }
 }
 
+
+function square_root() {
+    result = document.getElementById("result");
+    var square_num = Math.sqrt(result.innerText);
+    result.innerText = square_num;
+    numbers.push(square_num);
+}
+
+
 function insertAns() {
-    currentExpression += ans;
-    expressionDisplay.value = currentExpression;
+    if (ans !== 0) {
+        currentExpression += ans;
+        expressionDisplay.value = currentExpression;
+    }
 }
 
 function toggleSign() {
+    if (currentExpression.length === 0) {
+        return; // Do nothing if currentExpression is empty
+    }
+
+    // Toggle the sign of the expression
     if (currentExpression.charAt(0) === '-') {
         currentExpression = currentExpression.slice(1); 
     } else {
@@ -51,3 +71,6 @@ function toggleSign() {
     }
     expressionDisplay.value = currentExpression;
 }
+
+// Define operators for validation
+const operators = ["+", "-", "÷", "*"];
