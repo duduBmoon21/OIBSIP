@@ -73,7 +73,7 @@ button {
 }
 
 button:hover {
-    background-color:#fffffe;
+    background-color:#ffb01d;
 }
 
 .enter-btn {
@@ -92,6 +92,11 @@ button:hover {
     background-color: #ffb01d; 
 }
 
+.du:hover {
+    background-color: #ffffff;
+    color: #39364e;
+
+}
 .sign-btn {
     background-color: #bdd6f0;
     grid-column: span 2; 
