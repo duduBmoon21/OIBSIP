@@ -10,11 +10,11 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f8d9ef; /* Match the background color */
+    background-color: #fffcff; /* Match the background color */
 }
 
 .calculator {
-    background-color: #dfe6f0;
+    background-color: #39364e;
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
@@ -22,7 +22,7 @@ body {
 }
 
 .display {
-    background-color: #bdd6f0;
+    background-color: #fffcff;
     padding: 15px;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -64,7 +64,7 @@ body {
 
 button {
     padding: 20px;
-    background-color: #bdd6f0;
+    background-color: #fffcff;
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
@@ -73,21 +73,23 @@ button {
 }
 
 button:hover {
-    background-color: #aac4dd;
+    background-color:#ffb01d;
 }
 
 .enter-btn {
     grid-column: span 2;
-    background-color: #3b5998;
+    background-color: #b72326;
     color: white;
     font-size: 1.5rem;
 }
 
 .enter-btn:hover {
-    background-color: #2d4373;
+    background-color: #ffffff;
+    color: #39364e;
+
 }
 .du{
-    background-color: #a1c6f7; 
+    background-color: #ffb01d; 
 }
 
 .sign-btn {
