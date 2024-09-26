@@ -36,6 +36,21 @@ function btnInput(value) {
     }
 }
 
+// Function to clear the input
+function button_clear() {
+    expression = '';
+    lastAnswer = '';
+    document.getElementById("expression").value = '';
+    document.getElementById("result").value = '';
+}
+
+// Function to handle backspace removal
+function backspace_remove() {
+    // Remove the last character from the expression
+    expression = expression.slice(0, -1);
+    document.getElementById("expression").value = expression; // Update the displayed expression
+}
+
 // Function to handle sign change for numbers
 function plus_minus() {
     const resultField = document.getElementById("result");
@@ -67,8 +82,8 @@ document.addEventListener('keydown', function (e) {
     if (!isNaN(key) || ['+', '-', '*', '/', '(', ')', '%', '.', 'Enter'].includes(key)) {
         btnInput(key === 'Enter' ? '=' : key); // Use equal for Enter key
     } else if (key === 'Backspace') {
-        btnInput('del'); // Handle backspace
+        backspace_remove(); // Handle backspace
     } else if (key === 'Escape') {
-        btnInput('clear'); // Handle escape for clearing
+        button_clear(); // Handle escape for clearing
     }
 });
